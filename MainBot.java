@@ -27,12 +27,12 @@ public class MainBot extends ListenerAdapter
         }
     }
 	static Double RedSci = 0.001;
-	static Double GreenSci = 0.0025;
-	static Double MilSci = 0.0096;
-	static Double BlueSci = 0.0264;
-	static Double PurpleSci = 0.0887;
-	static Double YellowSci = 0.0994;
-	static Double WhiteSci = 0.2895;
+	static Double GreenSci = 0.0030;
+	static Double MilSci = 0.0082;
+	static Double BlueSci = 0.0227;
+	static Double PurpleSci = 0.0978;
+	static Double YellowSci = 0.1063;
+	static Double WhiteSci = 0.4182;
 	
 	public int getNbPotionNeeded(Double curr, Double target, Double difficulty, Double SciUsed){
 		Double currEvo = curr / 100;
@@ -121,10 +121,10 @@ public class MainBot extends ListenerAdapter
                             difficultyPercentage = 1.5;
                            break;
                         case "NIGHTMARE":
-                            difficultyPercentage = 2.0;
+                            difficultyPercentage = 2.5;
                            break;
                         case "INSANE":
-                            difficultyPercentage = 3.0;
+                            difficultyPercentage = 5.0;
                            break;
                         default:
                            channel.sendMessage("Shouldn't happen, did you just break the bot?! Ignore my answer for your evo command !").queue();
