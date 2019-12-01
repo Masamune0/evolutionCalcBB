@@ -25,9 +25,10 @@ public class Main extends ListenerAdapter
 {
     public static void main(String[] args)
     {
+        String DiscordBotKey = System.getenv("DISCORDBOTKEY");
         try
         {
-            JDA jda = new JDABuilder("DISCORDBOTTOKEN")         // The token of the account that is logging in.
+            JDA jda = new JDABuilder(DiscordBotKey)         // The token of the account that is logging in.
                     .addEventListeners(new Main())
                     .build();
             jda.awaitReady();
@@ -111,7 +112,7 @@ public class Main extends ListenerAdapter
                         && !difficulty.equals("HARD")
                         && !difficulty.equals("NIGHTMARE")
                         && !difficulty.equals("INSANE")){
-                    channel.sendMessage("Difficulty for !evo must be PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE. Example of command : !evo HARD 20 51").queue();
+                    channel.sendMessage("Difficulty for !evo must be PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE.\nExample of command : **!evo HARD 20 51**").queue();
                 }
                 else{
                     Double difficultyPercentage;
@@ -168,7 +169,7 @@ public class Main extends ListenerAdapter
                 }
             }else
             {
-                channel.sendMessage("Try again...\n The syntax is : !evo DIFFICULTY currentEvolution TargetEvolution\nExample : !evo HARD 50 92.5\n Example of difficulty : PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE").queue();
+                channel.sendMessage("Try again...\nThe syntax is : **!evo DIFFICULTY currentEvolution TargetEvolution**\nExample : **!evo HARD 50 92.5**\nExample of difficulty : PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE").queue();
             }
         }
     }

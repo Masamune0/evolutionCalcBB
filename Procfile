@@ -1,0 +1,1 @@
+worker: java -cp target/evocalculatorbb-1.0-SNAPSHOT.jar com.masa.mavenproject.Main

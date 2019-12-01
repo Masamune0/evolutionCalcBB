@@ -1,0 +1,11 @@
+With maven (create the jar): 
+maven goal : package  package
+
+On heroku, make a config var named "DISCORDBOTKEY", with the key of your bot
+
+
+For example our application name is : shielded-woodland-35926
+Deploy on heroku :
+heroku deploy:jar target/evocalculatorbb-1.0-SNAPSHOT.jar --app shielded-woodland-35926
+
+Execute the jar : heroku ps:scale worker=1 --app shielded-woodland-35926
