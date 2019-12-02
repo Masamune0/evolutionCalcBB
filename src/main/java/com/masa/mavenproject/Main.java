@@ -63,113 +63,129 @@ public class Main extends ListenerAdapter
 		return nbPotionUsed;
 	}
 	
+        public void interact_with_evo_cmd(JDA jda, User author, Message message, MessageChannel channel, String cmd)
+        {
+            
+            if  (cmd.startsWith("!evo"))   //Note, I used "startsWith, not equals.
+            {
+                Pattern p = Pattern.compile("!evo ([a-z]*[A-Z]*) ([0-9.]+) ([0-9.]+)");
+                Matcher m = p.matcher(cmd);
+
+                if (m.matches()){
+                    String difficulty =  m.group(1);
+                    difficulty = difficulty.toUpperCase();
+                    String currentEvoStr = m.group(2);
+                    String targetEvoStr = m.group(3);
+                    Double currentEvo;
+                    Double targetEvo;
+
+                    try{
+                    currentEvo =  Double.parseDouble(currentEvoStr);
+                    }catch (NumberFormatException e) {
+                        channel.sendMessage("Error processing the current evolution you specified : "+currentEvoStr+"(Error message : "+e.getMessage()+")").queue();
+                        return;
+                    } 
+
+                    try{
+                    targetEvo =  Double.parseDouble(targetEvoStr);
+                    }catch (NumberFormatException e) {
+                        channel.sendMessage("Error processing the target evolution you specified : "+targetEvoStr+"( Error message : "+e.getMessage()+")").queue();
+                        return;
+                    } 
+
+                    if (currentEvo >= targetEvo){
+                        channel.sendMessage("It doesnt make sense ("+currentEvo+">="+targetEvo+")... Please have a target evolution value higher than the current evolution value").queue();
+                        return;
+                    }
+
+                    if (!difficulty.equals("PEACEFUL")
+                            && !difficulty.equals("PIECEOFCAKE")
+                            && !difficulty.equals("EASY")
+                            && !difficulty.equals("NORMAL")
+                            && !difficulty.equals("HARD")
+                            && !difficulty.equals("NIGHTMARE")
+                            && !difficulty.equals("INSANE")){
+                        channel.sendMessage("Difficulty for !evo must be PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE.\nExample of command : **!evo HARD 20 51**").queue();
+                    }
+                    else{
+                        Double difficultyPercentage;
+                        switch(difficulty){
+                            case "PEACEFUL":
+                                difficultyPercentage = 0.25;
+                               break;
+                            case "PIECEOFCAKE":
+                                difficultyPercentage = 0.50;
+                               break;
+                            case "EASY":
+                                difficultyPercentage = 0.75;
+                               break;
+                            case "NORMAL":
+                                difficultyPercentage = 1.0;
+                               break;
+                            case "HARD":
+                                difficultyPercentage = 1.5;
+                               break;
+                            case "NIGHTMARE":
+                                difficultyPercentage = 2.5;
+                               break;
+                            case "INSANE":
+                                difficultyPercentage = 5.0;
+                               break;
+                            default:
+                               channel.sendMessage("Shouldn't happen, did you just break the bot?! Ignore my answer for your evo command !").queue();
+                               return;
+                        }
+                        int Red = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, RedSci);
+                        int Green = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, GreenSci);
+                        int Mil = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, MilSci);
+                        int Blue = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, BlueSci);
+                        int Purple = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, PurpleSci);
+                        int Yellow = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, YellowSci);
+                        int White = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, WhiteSci);
+
+                        String MessageToSend ="";
+                        MessageToSend+= "("+difficulty+")Red Science : " + Red + " sci to go from " +currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")Green Science : " + Green + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")Mil Science : " + Mil + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")Blue Science : " + Blue + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")Purple Science : " + Purple + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")Yellow Science : " + Yellow + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        MessageToSend+= "("+difficulty+")White Science : " + White + " sci to go from "+currentEvo+ " to "+ targetEvo;
+                        MessageToSend+="\n";
+                        channel.sendMessage(MessageToSend).queue();
+                    }
+                }else
+                {
+                    channel.sendMessage("Try again...\nThe syntax is : **!evo DIFFICULTY currentEvolution TargetEvolution**\nExample : **!evo HARD 50 92.5**\nExample of difficulty : PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE").queue();
+                }
+            }
+        }
+        
+        
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
         JDA jda = event.getJDA();
-
         User author = event.getAuthor();
         Message message = event.getMessage(); 
         MessageChannel channel = event.getChannel(); 
         String msg = message.getContentDisplay(); 
-
-        if  (msg.startsWith("!evo"))   //Note, I used "startsWith, not equals.
-        {
-            Pattern p = Pattern.compile("!evo ([a-z]*[A-Z]*) ([0-9.]+) ([0-9.]+)");
-            Matcher m = p.matcher(msg);
-            
-            if (m.matches()){
-                String difficulty =  m.group(1);
-                difficulty = difficulty.toUpperCase();
-                String currentEvoStr = m.group(2);
-                String targetEvoStr = m.group(3);
-                Double currentEvo;
-                Double targetEvo;
-                
-                try{
-                currentEvo =  Double.parseDouble(currentEvoStr);
-                }catch (NumberFormatException e) {
-                    channel.sendMessage("Error processing the current evolution you specified : "+currentEvoStr+"(Error message : "+e.getMessage()+")").queue();
-                    return;
-                } 
-                
-                try{
-                targetEvo =  Double.parseDouble(targetEvoStr);
-                }catch (NumberFormatException e) {
-                    channel.sendMessage("Error processing the target evolution you specified : "+targetEvoStr+"( Error message : "+e.getMessage()+")").queue();
-                    return;
-                } 
-                
-                if (currentEvo >= targetEvo){
-                    channel.sendMessage("It doesnt make sense ("+currentEvo+">="+targetEvo+")... Please have a target evolution value higher than the current evolution value").queue();
-                    return;
+        if (msg.contains("!evo")){
+            if ( event.getChannel().getName().contains("biter-battles")){
+                Pattern p = Pattern.compile("(.*)!evo (.*)");
+                Matcher m = p.matcher(msg);
+                if (m.matches()){
+                    String command = "!evo "+m.group(2);
+                    interact_with_evo_cmd(jda,author,message,channel,command);
                 }
-                
-                if (!difficulty.equals("PEACEFUL")
-                        && !difficulty.equals("PIECEOFCAKE")
-                        && !difficulty.equals("EASY")
-                        && !difficulty.equals("NORMAL")
-                        && !difficulty.equals("HARD")
-                        && !difficulty.equals("NIGHTMARE")
-                        && !difficulty.equals("INSANE")){
-                    channel.sendMessage("Difficulty for !evo must be PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE.\nExample of command : **!evo HARD 20 51**").queue();
-                }
-                else{
-                    Double difficultyPercentage;
-                    switch(difficulty){
-                        case "PEACEFUL":
-                            difficultyPercentage = 0.25;
-                           break;
-                        case "PIECEOFCAKE":
-                            difficultyPercentage = 0.50;
-                           break;
-                        case "EASY":
-                            difficultyPercentage = 0.75;
-                           break;
-                        case "NORMAL":
-                            difficultyPercentage = 1.0;
-                           break;
-                        case "HARD":
-                            difficultyPercentage = 1.5;
-                           break;
-                        case "NIGHTMARE":
-                            difficultyPercentage = 2.5;
-                           break;
-                        case "INSANE":
-                            difficultyPercentage = 5.0;
-                           break;
-                        default:
-                           channel.sendMessage("Shouldn't happen, did you just break the bot?! Ignore my answer for your evo command !").queue();
-                           return;
-                    }
-                    int Red = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, RedSci);
-                    int Green = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, GreenSci);
-                    int Mil = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, MilSci);
-                    int Blue = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, BlueSci);
-                    int Purple = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, PurpleSci);
-                    int Yellow = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, YellowSci);
-                    int White = getNbPotionNeeded(currentEvo,targetEvo,difficultyPercentage, WhiteSci);
-
-                    String MessageToSend ="";
-                    MessageToSend+= "("+difficulty+")Red Science : " + Red + " sci to go from " +currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")Green Science : " + Green + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")Mil Science : " + Mil + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")Blue Science : " + Blue + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")Purple Science : " + Purple + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")Yellow Science : " + Yellow + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    MessageToSend+= "("+difficulty+")White Science : " + White + " sci to go from "+currentEvo+ " to "+ targetEvo;
-                    MessageToSend+="\n";
-                    channel.sendMessage(MessageToSend).queue();
-                }
-            }else
-            {
-                channel.sendMessage("Try again...\nThe syntax is : **!evo DIFFICULTY currentEvolution TargetEvolution**\nExample : **!evo HARD 50 92.5**\nExample of difficulty : PEACEFUL or PIECEOFCAKE or EASY or NORMAL or HARD or NIGHTMARE or INSANE").queue();
+            }else if (event.isFromType(ChannelType.PRIVATE)){
+                interact_with_evo_cmd(jda,author,message,channel,msg);
             }
         }
     }
