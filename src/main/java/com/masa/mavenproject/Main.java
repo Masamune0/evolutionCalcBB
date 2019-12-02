@@ -56,7 +56,7 @@ public class Main extends ListenerAdapter
 			double dimModifier = (1/(Math.pow(10.0, e2 * 0.017)))/(e2*0.5);
 			double evoGain = SciUsed * dimModifier;
 			currEvo = currEvo + evoGain;
-			int scale = (int) Math.pow(10, 12);
+			int scale = (int) Math.pow(10, 9);
 			currEvo =  (double) Math.round(currEvo * scale) / scale;
 			nbPotionUsed++;
 		}
